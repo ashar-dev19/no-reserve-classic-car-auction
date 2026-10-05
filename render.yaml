@@ -1,0 +1,32 @@
+# Render blueprint. Create the service with New → Blueprint and point it at
+# this repository; Render reads the Dockerfile and the disk from here.
+#
+# The plan matters: a persistent disk needs a paid instance type. On the free
+# tier there is no disk and the service sleeps after fifteen minutes, so the
+# database would be recreated empty on every wake.
+
+services:
+  - type: web
+    name: nrc-auction
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    region: oregon
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /
+
+    # A service with a disk runs as a single instance, which is what the
+    # in-process live-bid bus requires anyway.
+    disk:
+      name: auction-data
+      mountPath: /data
+      sizeGB: 1
+
+    envVars:
+      # Render generates this once and keeps it. Without it the app falls back
+      # to a secret published in this repository and admin sessions can be forged.
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: DATABASE_PATH
+        value: /data/auction.db

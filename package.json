@@ -1,0 +1,38 @@
+{
+  "name": "apex-auctions",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && npm run build:seed",
+    "start": "next start",
+    "lint": "next lint",
+    "seed": "tsx scripts/seed.mts",
+    "typecheck": "tsc --noEmit",
+    "test:engine": "tsx scripts/test-engine.mts",
+    "smoke": "node scripts/smoke.mjs",
+    "overview": "node scripts/build-overview.mjs",
+    "build:seed": "esbuild scripts/seed.mts --bundle --platform=node --format=esm --target=node22 --outfile=dist/seed.mjs --external:better-sqlite3"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.10.0",
+    "jose": "^5.9.6",
+    "lucide-react": "^0.468.0",
+    "next": "^16.3.8",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "server-only": "^0.0.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "esbuild": "^0.28.2",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.7.2"
+  }
+}

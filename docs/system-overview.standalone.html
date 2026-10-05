@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="How the collector car auction platform works.">
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<title>Collector Car Auction System</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap">
+
+<style>
+  :root {
+    color-scheme: light;
+
+    --paper:      #ffffff;
+    --paper-2:    #f6f4f2;
+    --paper-3:    #ebe7e3;
+    --ink:        #141312;
+    --ink-soft:   #3d3a37;
+    --muted:      #6f6a66;
+    --line:       #e2ded9;
+
+    --brand:      #f90000;
+    --brand-wash: #fff1f0;
+    --amber:      #ff8400;
+    --gain:       #0f8a4a;
+    --gain-wash:  #ebf6f0;
+
+    --band:       #141312;
+    --band-ink:   #f3f1ef;
+    --band-muted: #a39c96;
+    --band-line:  rgba(255,255,255,.16);
+
+    --display: "Roboto Condensed", "Arial Narrow", Arial, sans-serif;
+    --body:    "Roboto", -apple-system, "Segoe UI", Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper:      #161514;
+      --paper-2:    #1f1d1b;
+      --paper-3:    #2b2825;
+      --ink:        #f2efec;
+      --ink-soft:   #d2cdc8;
+      --muted:      #9c948d;
+      --line:       #322e2b;
+      --brand:      #ff4a42;
+      --brand-wash: #2b1614;
+      --amber:      #ffa23d;
+      --gain:       #3fb77a;
+      --gain-wash:  #112a1e;
+      --band:       #0d0c0b;
+      --band-ink:   #f2efec;
+      --band-muted: #968e87;
+      --band-line:  rgba(255,255,255,.14);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper:      #161514;
+    --paper-2:    #1f1d1b;
+    --paper-3:    #2b2825;
+    --ink:        #f2efec;
+    --ink-soft:   #d2cdc8;
+    --muted:      #9c948d;
+    --line:       #322e2b;
+    --brand:      #ff4a42;
+    --brand-wash: #2b1614;
+    --amber:      #ffa23d;
+    --gain:       #3fb77a;
+    --gain-wash:  #112a1e;
+    --band:       #0d0c0b;
+    --band-ink:   #f2efec;
+    --band-muted: #968e87;
+    --band-line:  rgba(255,255,255,.14);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell { padding-inline: 20px; }
+  .col { width: 100%; max-width: 860px; margin-inline: auto; }
+
+  h1, h2, h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    line-height: 1.1;
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 { font-size: clamp(32px, 5.6vw, 46px); letter-spacing: -.015em; }
+  h2 { font-size: clamp(23px, 3.4vw, 28px); letter-spacing: -.01em; }
+  h3 { font-size: 16px; }
+  p { margin: 0; }
+
+  .eyebrow {
+    font-family: var(--display);
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--brand); margin: 0;
+  }
+  .lede { font-size: 17px; line-height: 1.6; color: var(--ink-soft); max-width: 62ch; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .stack   { display: flex; flex-direction: column; gap: 18px; }
+  .stack-s { display: flex; flex-direction: column; gap: 9px; }
+  .stack-l { display: flex; flex-direction: column; gap: 28px; }
+
+  section { padding-block: 46px; }
+  section + section { border-top: 1px solid var(--line); }
+
+  /* ── Hero ───────────────────────────────────────── */
+
+  .hero { background: var(--band); color: var(--band-ink); padding-block: 56px 48px; }
+  .hero h1 { color: var(--band-ink); }
+  .hero .lede { color: var(--band-muted); }
+  hr.rule { height: 3px; width: 52px; background: var(--brand); border: 0; margin: 0; }
+
+
+  /* ── Actor cards ────────────────────────────────── */
+
+  .actors { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .actor {
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 17px; background: var(--paper-2);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .actor.sys { background: var(--brand-wash); border-color: var(--brand); }
+  .actor h3 { font-size: 15px; }
+  .actor p { font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+  .tag {
+    font-family: var(--display); font-weight: 700;
+    font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .actor.sys .tag { color: var(--brand); }
+
+  /* ── Diagram ────────────────────────────────────── */
+
+  .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .diagram { min-width: 680px; width: 100%; height: auto; display: block; }
+
+  .d-boundary { fill: var(--paper-2); stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  .d-boundary-label {
+    font-family: var(--display); font-weight: 700; font-size: 13px;
+    letter-spacing: .14em; text-transform: uppercase; fill: var(--muted);
+  }
+  .d-case { fill: var(--paper); stroke: var(--line); stroke-width: 1.5; }
+  .d-case-auto { fill: var(--brand-wash); stroke: var(--brand); stroke-width: 1.5; }
+  .d-case-label { font-family: var(--body); font-size: 13px; fill: var(--ink); }
+  .d-actor { stroke: var(--ink); stroke-width: 1.8; fill: none; stroke-linecap: round; }
+  .d-actor-sys { stroke: var(--brand); stroke-width: 1.8; fill: none; stroke-linecap: round; }
+  .d-actor-label { font-family: var(--display); font-weight: 700; font-size: 13.5px; fill: var(--ink); }
+  .d-actor-label-sys { font-family: var(--display); font-weight: 700; font-size: 13.5px; fill: var(--brand); }
+  .d-link { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+  .d-link-auto { stroke: var(--brand); stroke-width: 1.2; fill: none; }
+
+  /* ── Lifecycle strip ────────────────────────────── */
+
+  .life { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+  .life-i {
+    flex: 1 1 140px; min-width: 0;
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 13px 14px; background: var(--paper-2);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .life-i.ok { background: var(--gain-wash); border-color: var(--gain); }
+  .life-i .t { font-family: var(--display); font-weight: 700; font-size: 14.5px; }
+  .life-i .d { font-size: 13px; color: var(--ink-soft); line-height: 1.45; }
+
+  .chip {
+    display: inline-flex; align-self: flex-start;
+    font-family: var(--display); font-weight: 700;
+    font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 999px; line-height: 1.4;
+  }
+  .c-wait { background: var(--paper-3); color: var(--muted); }
+  .c-live { background: var(--brand); color: #fff; }
+  .c-sold { background: var(--gain); color: #fff; }
+
+  /* ── Rules ──────────────────────────────────────── */
+
+  .rules { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+  .rule-c {
+    border-left: 3px solid var(--brand);
+    background: var(--paper-2);
+    border-radius: 0 10px 10px 0;
+    padding: 15px 17px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .rule-c h3 { font-size: 15.5px; }
+  .rule-c p { font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+
+  /* ── Credentials ────────────────────────────────── */
+
+  .creds { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); }
+  .cred {
+    border: 1px solid var(--band-line); border-radius: 10px;
+    padding: 13px 15px; display: flex; flex-direction: column; gap: 2px;
+  }
+  .cred .r { font-family: var(--display); font-weight: 700; font-size: 11px; letter-spacing: .11em; text-transform: uppercase; color: var(--brand); }
+  .cred .e { font-size: 13.5px; color: var(--band-ink); word-break: break-all; }
+  .cred .p { font-size: 13px; color: var(--band-muted); }
+
+  footer { padding-block: 28px 38px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--muted); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  }
+</style>
+
+<header class="hero shell">
+  <div class="col stack">
+    <p class="eyebrow">System Overview</p>
+    <h1>Collector car auction platform</h1>
+    <hr class="rule">
+    <p class="lede">
+      Bidders register and are vetted by you. Lots run on their own clock. When the clock stops the
+      system picks the winner, checks the reserve and raises the invoice — with nobody calling the
+      room.
+    </p>
+  </div>
+</header>
+
+<section class="shell">
+  <div class="col stack-l">
+    <div class="stack-s">
+      <p class="eyebrow">Actors</p>
+      <h2>Who uses the system</h2>
+    </div>
+
+    <div class="actors">
+      <div class="actor">
+        <span class="tag">Actor</span>
+        <h3>Bidder</h3>
+        <p>Registers, browses the catalogue, names a maximum bid, pays on winning.</p>
+      </div>
+      <div class="actor">
+        <span class="tag">Actor</span>
+        <h3>Consignor</h3>
+        <p>Submits a vehicle through the public form for you to review.</p>
+      </div>
+      <div class="actor">
+        <span class="tag">Actor</span>
+        <h3>Administrator</h3>
+        <p>Approves bidders, builds the catalogue, watches the sale as it runs.</p>
+      </div>
+      <div class="actor sys">
+        <span class="tag">System actor</span>
+        <h3>Auction clock</h3>
+        <p>Opens and closes lots, settles them and raises invoices, unattended.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="shell">
+  <div class="col stack-l">
+    <div class="stack-s">
+      <p class="eyebrow">Use Cases</p>
+      <h2>What each one does</h2>
+      <p class="lede" style="font-size:15.5px">
+        Red marks what the system does by itself. Those three cases are the reason a sale can run
+        overnight.
+      </p>
+    </div>
+
+    <div class="scroll">
+      <svg class="diagram" viewBox="0 0 900 640" role="img"
+           aria-label="Use case diagram. The Bidder registers to bid, browses lots and asks questions, places a maximum bid, and pays the invoice. The Consignor submits a vehicle. The Administrator approves bidders, manages the catalogue and monitors the live sale. The Auction clock, a system actor, opens and closes lots, settles the sale and raises invoices.">
+
+        <!-- system boundary -->
+        <rect class="d-boundary" x="250" y="14" width="400" height="612" rx="14"/>
+        <text class="d-boundary-label" x="450" y="44" text-anchor="middle">Auction Platform</text>
+
+        <!-- links: bidder -->
+        <line class="d-link" x1="132" y1="180" x2="352" y2="90"/>
+        <line class="d-link" x1="132" y1="180" x2="352" y2="146"/>
+        <line class="d-link" x1="132" y1="180" x2="352" y2="202"/>
+        <line class="d-link" x1="132" y1="180" x2="352" y2="258"/>
+        <!-- links: consignor -->
+        <line class="d-link" x1="132" y1="420" x2="352" y2="314"/>
+        <!-- links: administrator -->
+        <line class="d-link" x1="768" y1="420" x2="548" y2="370"/>
+        <line class="d-link" x1="768" y1="420" x2="548" y2="426"/>
+        <line class="d-link" x1="768" y1="420" x2="548" y2="482"/>
+        <!-- links: auction clock -->
+        <line class="d-link-auto" x1="768" y1="570" x2="548" y2="538"/>
+        <line class="d-link-auto" x1="768" y1="570" x2="548" y2="594"/>
+
+        <!-- use cases -->
+        <ellipse class="d-case" cx="450" cy="90"  rx="98" ry="23"/>
+        <text class="d-case-label" x="450" y="95"  text-anchor="middle">Register to bid</text>
+
+        <ellipse class="d-case" cx="450" cy="146" rx="98" ry="23"/>
+        <text class="d-case-label" x="450" y="151" text-anchor="middle">Browse lots, ask questions</text>
+
+        <ellipse class="d-case" cx="450" cy="202" rx="98" ry="23"/>
+        <text class="d-case-label" x="450" y="207" text-anchor="middle">Place a maximum bid</text>
+
+        <ellipse class="d-case" cx="450" cy="258" rx="98" ry="23"/>
+        <text class="d-case-label" x="450" y="263" text-anchor="middle">Pay the invoice</text>
+
+        <ellipse class="d-case" cx="450" cy="314" rx="98" ry="23"/>
+        <text class="d-case-label" x="450" y="319" text-anchor="middle">Submit a vehicle</text>
+
+        <ellipse class="d-case" cx="450" cy="370" rx="98" ry="23"/>
+        <text class="d-case-label" x="450" y="375" text-anchor="middle">Approve bidders</text>
+
+        <ellipse class="d-case" cx="450" cy="426" rx="98" ry="23"/>
+        <text class="d-case-label" x="450" y="431" text-anchor="middle">Manage the catalogue</text>
+
+        <ellipse class="d-case" cx="450" cy="482" rx="98" ry="23"/>
+        <text class="d-case-label" x="450" y="487" text-anchor="middle">Monitor the live sale</text>
+
+        <ellipse class="d-case-auto" cx="450" cy="538" rx="98" ry="23"/>
+        <text class="d-case-label" x="450" y="543" text-anchor="middle">Open and close lots</text>
+
+        <ellipse class="d-case-auto" cx="450" cy="594" rx="98" ry="23"/>
+        <text class="d-case-label" x="450" y="599" text-anchor="middle">Settle and invoice</text>
+
+        <!-- actor: bidder -->
+        <g class="d-actor">
+          <circle cx="110" cy="152" r="12"/>
+          <line x1="110" y1="164" x2="110" y2="190"/>
+          <line x1="94"  y1="176" x2="126" y2="176"/>
+          <line x1="110" y1="190" x2="98"  y2="212"/>
+          <line x1="110" y1="190" x2="122" y2="212"/>
+        </g>
+        <text class="d-actor-label" x="110" y="232" text-anchor="middle">Bidder</text>
+
+        <!-- actor: consignor -->
+        <g class="d-actor">
+          <circle cx="110" cy="392" r="12"/>
+          <line x1="110" y1="404" x2="110" y2="430"/>
+          <line x1="94"  y1="416" x2="126" y2="416"/>
+          <line x1="110" y1="430" x2="98"  y2="452"/>
+          <line x1="110" y1="430" x2="122" y2="452"/>
+        </g>
+        <text class="d-actor-label" x="110" y="472" text-anchor="middle">Consignor</text>
+
+        <!-- actor: administrator -->
+        <g class="d-actor">
+          <circle cx="790" cy="392" r="12"/>
+          <line x1="790" y1="404" x2="790" y2="430"/>
+          <line x1="774" y1="416" x2="806" y2="416"/>
+          <line x1="790" y1="430" x2="778" y2="452"/>
+          <line x1="790" y1="430" x2="802" y2="452"/>
+        </g>
+        <text class="d-actor-label" x="790" y="472" text-anchor="middle">Administrator</text>
+
+        <!-- actor: auction clock (system) -->
+        <g class="d-actor-sys">
+          <circle cx="790" cy="552" r="19"/>
+          <line x1="790" y1="540" x2="790" y2="552"/>
+          <line x1="790" y1="552" x2="799" y2="558"/>
+        </g>
+        <text class="d-actor-label-sys" x="790" y="594" text-anchor="middle">Auction clock</text>
+        <text class="d-actor-label-sys" x="790" y="610" text-anchor="middle" style="font-size:11px; opacity:.8">&laquo;system&raquo;</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="shell">
+  <div class="col stack-l">
+    <div class="stack-s">
+      <p class="eyebrow">Lot Lifecycle</p>
+      <h2>What happens to each car</h2>
+    </div>
+
+    <div class="life">
+      <div class="life-i">
+        <span class="chip c-wait">Scheduled</span>
+        <div class="t">Catalogued</div>
+        <div class="d">Published, with photographs and a condition report. Bidding not yet open.</div>
+      </div>
+      <div class="life-i">
+        <span class="chip c-live">Live</span>
+        <div class="t">Bidding</div>
+        <div class="d">Opens on its own at the published time. Prices and countdowns update on every screen without a refresh.</div>
+      </div>
+      <div class="life-i ok">
+        <span class="chip c-sold">Sold</span>
+        <div class="t">Settled</div>
+        <div class="d">Reserve met. Winner assigned, invoice raised, everyone who bid is notified.</div>
+      </div>
+      <div class="life-i">
+        <span class="chip c-wait">Not sold</span>
+        <div class="t">Reserve missed</div>
+        <div class="d">No sale, no invoice. You introduce the high bidder to the seller afterwards.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="shell">
+  <div class="col stack-l">
+    <div class="stack-s">
+      <p class="eyebrow">The Two Rules</p>
+      <h2>How bidding resolves</h2>
+    </div>
+
+    <div class="rules">
+      <div class="rule-c">
+        <h3>A bidder names a ceiling, not a price</h3>
+        <p>
+          The system bids for them, one step at a time, and only as high as the competition forces.
+          A bidder willing to pay $40,000 beats a $25,000 rival at $25,250 and keeps the rest. The
+          ceiling is never shown to anyone.
+        </p>
+      </div>
+      <div class="rule-c">
+        <h3>The last second cannot steal the lot</h3>
+        <p>
+          Any bid in the final two minutes pushes the close back out by two minutes, without limit.
+          A lot ends when bidding stops, not when the clock runs out — so nobody has to sit at a
+          screen to defend a position.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="shell" style="background:var(--band); color:var(--band-ink); border-top:0">
+  <div class="col stack-l">
+    <div class="stack-s">
+      <p class="eyebrow">Try It</p>
+      <h2 style="color:var(--band-ink)">Three points of view</h2>
+      <p class="lede" style="color:var(--band-muted); font-size:15.5px">
+        Bid as the approved account, watch it land on the administrator's live monitor in a second
+        window, then let the clock run out and see the invoice appear on its own.
+      </p>
+    </div>
+
+    <div class="creds">
+      <div class="cred">
+        <span class="r">Approved bidder</span>
+        <span class="e">broker@demo.com</span>
+        <span class="p">demo1234</span>
+      </div>
+      <div class="cred">
+        <span class="r">Awaiting approval</span>
+        <span class="e">pending@demo.com</span>
+        <span class="p">demo1234</span>
+      </div>
+      <div class="cred">
+        <span class="r">Administrator</span>
+        <span class="e">admin@noreserveclassics.com</span>
+        <span class="p">admin1234</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="shell">
+  <div class="col stack-s">
+    <p>
+      Shown in No Reserve Classics livery as a reference skin. The branding and contact details are
+      swappable; the same platform carries any auction house's identity.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

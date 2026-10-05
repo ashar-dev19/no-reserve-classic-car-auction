@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+data/*.db
+data/*.db-*
+_decoded
+_sheet.png
+auction-assets
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+dist

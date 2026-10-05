@@ -2,8 +2,7 @@ import Database from "better-sqlite3";
 import fs from "node:fs";
 import path from "node:path";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const DB_PATH = process.env.DATABASE_PATH ?? path.join(DATA_DIR, "auction.db");
+const DB_PATH = process.env.DATABASE_PATH ?? path.join(process.cwd(), "data", "auction.db");
 
 declare global {
   // eslint-disable-next-line no-var
@@ -11,7 +10,11 @@ declare global {
 }
 
 function create(): Database.Database {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
+  // Create the directory the database actually lives in. Deriving this from
+  // DB_PATH rather than from the working directory matters in a container,
+  // where the volume is mounted outside the app directory and the app runs as
+  // a user with no write access to it.
+  fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
   const db = new Database(DB_PATH);
   db.pragma("journal_mode = WAL");
   db.pragma("foreign_keys = ON");

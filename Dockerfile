@@ -48,7 +48,7 @@ COPY --from=build --chown=nextjs:nodejs /app/public           ./public
 COPY --from=build --chown=nextjs:nodejs /app/dist/seed.mjs    ./dist/seed.mjs
 
 COPY --chown=nextjs:nodejs docker-entrypoint.sh ./docker-entrypoint.sh
-RUN chmod +x ./docker-entrypoint.sh && mkdir -p /data && chown nextjs:nodejs /data
+RUN chmod +x ./docker-entrypoint.sh && mkdir -p /data && chown nextjs:nodejs /data /app
 
 USER nextjs
 VOLUME ["/data"]

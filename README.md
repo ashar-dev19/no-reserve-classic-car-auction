@@ -210,17 +210,35 @@ as it starts — with countdowns measured from container start rather than from
 build time. To reset before a presentation, set `SEED_ON_START=force` and
 redeploy, then remove the variable again.
 
-### Render
+### Render, free
 
-Same `Dockerfile`, and `render.yaml` describes the whole service. Create it with
-**New → Blueprint** pointed at the repository; the disk and `AUTH_SECRET` come
-from the blueprint, so there is nothing to configure by hand.
+`render-free.yaml` deploys the whole thing at no cost. **New → Blueprint**,
+point it at this repository, pick that file. Nothing to configure — Render
+generates `AUTH_SECRET` itself.
 
-One thing to get right: **the free tier will not work.** A persistent disk needs
-a paid instance type, and free services sleep after fifteen minutes of
-inactivity. Without a disk the database is recreated empty on every wake, and
-the sleep also drops the live-update connections and the ticker that closes
-lots. Use Starter or above.
+Free instances cannot have a persistent disk, so the database lives on the
+container's own filesystem and disappears when the service restarts. The app
+handles this by design: the entrypoint seeds whenever the database is missing,
+so every cold start brings up a full catalogue with countdowns measured from
+that moment. The demo is never stale.
+
+What it costs you:
+
+- Bids anyone places are lost on the next restart.
+- The service sleeps after about fifteen minutes idle. The next request waits
+  roughly a minute while it wakes and reseeds, so open the link a minute before
+  you show it to anyone.
+- Nothing runs while it sleeps, so lots do not close on their own during that
+  time.
+
+For a demonstration that is fine. For taking real bids it is not — that needs
+the paid path below.
+
+### Render, paid
+
+`render.yaml` is the same service with a 1GB disk at `/data`, on the Starter
+plan. Data survives restarts and deploys, nothing sleeps, and lots close on
+time. Roughly $7/month for the instance plus pennies for the disk.
 
 ### Fly.io
 

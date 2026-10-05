@@ -282,3 +282,14 @@ real decisions before it carries real money.
   with no KYC or deposit hold. A sale of this size would likely want both.
 - **Photography.** The demo uses stock imagery as a stand-in. Real lots need
   real photographs, and the inspection workflow that produces them.
+
+---
+
+## The client-facing overview
+
+`docs/system-overview.html` is the plain-language explainer: the actors, a use
+case diagram, the lot lifecycle and the two rules that resolve bidding.
+
+`npm run overview` wraps it as a complete HTML document into `public/overview.html`,
+and the build does this automatically. The deployed app therefore serves it at
+**`/overview`** on its own domain — one link to send, with no access to grant.

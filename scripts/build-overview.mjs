@@ -1,17 +1,17 @@
 /**
- * Wraps docs/system-overview.html in a full HTML document.
+ * Wraps docs/system-overview.html in a full HTML document and writes it into
+ * public/, so the deployed app serves the client-facing overview at /overview
+ * on its own domain — one link, no access to grant.
  *
- * The source file is written for the Artifact publisher, which supplies its own
- * <!doctype>, <head> and <body>. A browser opening the raw file would fall into
- * quirks mode, so this emits a standalone copy to open locally or email as an
- * attachment.
+ * The source file omits <!doctype>, <head> and <body> because the Artifact
+ * publisher supplies them; without them a browser falls into quirks mode.
  *
- *   node scripts/build-overview.mjs
+ *   npm run overview
  */
 import { readFileSync, writeFileSync } from "node:fs";
 
 const SRC = "docs/system-overview.html";
-const OUT = "docs/system-overview.standalone.html";
+const OUT = "public/overview.html";
 
 const body = readFileSync(SRC, "utf8");
 const title = body.match(/<title>([^<]*)<\/title>/)?.[1] ?? "System Overview";

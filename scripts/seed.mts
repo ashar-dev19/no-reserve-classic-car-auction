@@ -92,32 +92,22 @@ interface SeedAuction {
   premiumBps: number;
 }
 
+const H3 = -2160;   // three months ago
+const H35 = -2520;  // roughly three and a half
+
 const AUCTIONS: SeedAuction[] = [
   {
     slug: "hamptons-collector-sale",
     title: "The Hamptons Collector Sale",
     subtitle: "Columbus Day Weekend · Bridgehampton, New York",
     description:
-      "Our flagship East End sale returns for Columbus Day weekend, with fourteen carefully selected lots offered across three days at the Bridgehampton Historical Society grounds. Preview opens Friday morning; the online clock closes lot by lot through Monday evening, with live floor bidding running alongside.\n\nEvery lot is inspected and photographed by our team, and condition reports are published in full — including the flaws. Registered bidders may bid online, by telephone, or from the floor.",
+      "Our flagship East End sale, running now at the Bridgehampton Historical Society grounds. Lots close one at a time through the weekend rather than all at once, so each car gets the room's full attention as it comes up.\n\nMost of this catalogue has already gone under the hammer. Two lots are still on the clock, and bidding on them is open to any approved bidder — online, by telephone, or from the floor.",
     venue: "Bridgehampton Historical Society",
     location: "Bridgehampton, NY",
     hero: "/cars/hero-wide.jpg",
     startsInHours: -72,
-    endsInHours: 120,
+    endsInHours: 96,
     premiumBps: 1000,
-  },
-  {
-    slug: "modern-performance-online",
-    title: "Modern Performance",
-    subtitle: "Online Only · Closing Through the Week",
-    description:
-      "A timed online sale of late-model performance cars, electric flagships and modern classics. No floor, no paddle — lots close on a rolling schedule with two-minute soft-close extensions on every lot.",
-    venue: "Online",
-    location: "Tri-State Area",
-    hero: "/cars/neon-tunnel.jpg",
-    startsInHours: -48,
-    endsInHours: 90,
-    premiumBps: 800,
   },
   {
     slug: "winter-garage-january",
@@ -134,16 +124,29 @@ const AUCTIONS: SeedAuction[] = [
   },
   {
     slug: "summer-classics-2026",
-    title: "Summer Classics 2026",
-    subtitle: "Results · August 2026",
+    title: "Summer Classics",
+    subtitle: "Results · July 2026",
     description:
-      "Results from our August sale. Full hammer prices are published for every lot, sold and unsold alike.",
+      "Twelve lots offered over two days at Bridgehampton. Full hammer prices are published below for every lot, sold and unsold alike — we do not quietly remove the ones that did not find a buyer.",
     venue: "Bridgehampton Historical Society",
     location: "Bridgehampton, NY",
     hero: "/cars/field-classics.jpg",
-    startsInHours: -1_560,
-    endsInHours: -1_436,
+    startsInHours: H3 - 48,
+    endsInHours: H3,
     premiumBps: 1000,
+  },
+  {
+    slug: "modern-performance-online",
+    title: "Modern Performance",
+    subtitle: "Results · Online Only, June 2026",
+    description:
+      "A timed online sale of late-model performance cars, electric flagships and modern classics. No floor and no paddle — lots closed on a rolling schedule with two-minute soft-close extensions throughout.",
+    venue: "Online",
+    location: "Tri-State Area",
+    hero: "/cars/neon-tunnel.jpg",
+    startsInHours: H35 - 36,
+    endsInHours: H35,
+    premiumBps: 800,
   },
 ];
 

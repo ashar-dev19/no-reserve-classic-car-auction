@@ -1,0 +1,37 @@
+# Free-tier blueprint. Render → New → Blueprint, and point it at this file.
+#
+# The difference from render.yaml is that there is no persistent disk, because
+# free instances cannot have one. The database lives on the container's own
+# filesystem and is lost whenever the service restarts or wakes from sleep.
+#
+# That is survivable here, and arguably useful: the container seeds itself
+# whenever the database is missing, so every cold start produces a complete
+# catalogue with countdowns measured from that moment. The demo is never stale.
+#
+# What you give up:
+#   - Bids placed by anyone are lost on the next restart.
+#   - The service sleeps after ~15 minutes idle, and the next request waits
+#     roughly a minute while it wakes and reseeds.
+#   - While asleep nothing runs, so lots do not close on time.
+#
+# For showing the system to someone, that is fine — open the link a minute
+# before you need it. For taking real bids, use render.yaml and a paid instance.
+
+services:
+  - type: web
+    name: nrc-auction-demo
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /
+
+    envVars:
+      # Render generates this once and keeps it across deploys.
+      - key: AUTH_SECRET
+        generateValue: true
+      # Inside the container image, not a mounted disk — ephemeral by design.
+      - key: DATABASE_PATH
+        value: /data/auction.db

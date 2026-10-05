@@ -12,7 +12,8 @@
     "test:engine": "tsx scripts/test-engine.mts",
     "smoke": "node scripts/smoke.mjs",
     "overview": "node scripts/build-overview.mjs",
-    "build:seed": "esbuild scripts/seed.mts --bundle --platform=node --format=esm --target=node22 --outfile=dist/seed.mjs --external:better-sqlite3"
+    "build:seed": "esbuild scripts/seed.mts --bundle --platform=node --format=esm --target=node22 --outfile=dist/seed.mjs --external:better-sqlite3",
+    "check:docker": "node scripts/check-docker-context.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^11.10.0",

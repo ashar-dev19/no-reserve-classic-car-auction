@@ -2,7 +2,7 @@ node_modules
 .next
 .git
 data
-docs
+# docs/ is NOT ignored: the build reads docs/system-overview.html
 _decoded
 auction-assets
 *.md
